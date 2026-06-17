@@ -1,9 +1,10 @@
 *.bak
 *.bk
-*.env
 *.egg-info
-build
+*.env
 .cache
 __pycache__/
+build
 contributors.txt
+dist
 temp_repo_clone
