@@ -103,9 +103,9 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 <div align="center">
    <a href="https://www.star-history.com/repos=ishandutta2007%2Fmanage-github-tabs-buttons&type=date&legend=bottom-right">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chartrepos=ishandutta2007/manage-github-tabs-buttons&type=date&theme=dark&legend=bottom-right" />
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chartrepos=ishandutta2007/manage-github-tabs-buttons&type=date&legend=bottom-right" />
-      <img alt="Star History Chart" src="https://api.star-history.com/chartrepos=ishandutta2007/manage-github-tabs-buttons&type=date&legend=bottom-right" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ishandutta2007/manage-github-tabs-buttons&type=date&theme=dark&legend=bottom-right" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ishandutta2007/manage-github-tabs-buttons&type=date&legend=bottom-right" />
+      <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ishandutta2007/manage-github-tabs-buttons&type=date&legend=bottom-right" />
     </picture>
    </a>
 </div>
