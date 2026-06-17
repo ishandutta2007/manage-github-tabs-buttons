@@ -1,6 +1,8 @@
 *.bak
 *.bk
 *.env
+*.egg-info
+build
 .cache
 __pycache__/
 contributors.txt
