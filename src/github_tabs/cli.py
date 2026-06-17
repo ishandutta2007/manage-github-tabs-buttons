@@ -3,6 +3,7 @@ import sys
 import argparse
 import subprocess
 import requests
+import base64
 from dotenv import load_dotenv
 
 def get_git_remote_info():
@@ -46,8 +47,6 @@ def get_authenticated_user(token):
     except Exception as e:
         print(f"Warning: Could not fetch authenticated user: {e}")
     return None
-
-import base64
 
 def ensure_funding_yml(owner, repo, token, headers):
     """Checks for .github/FUNDING.yml and creates it if missing."""
@@ -144,7 +143,6 @@ def main():
     # Sponsorship must be handled via GraphQL
     if field == 'hasSponsorshipsEnabled':
         print(f"Action: Enabling '{args.tabname}' via GraphQL mutation...")
-        print("Note: For the 'Sponsor' button to appear, you also need a '.github/FUNDING.yml' file.")
         
         # 1. Get Repo Node ID
         repo_resp = requests.get(f'https://api.github.com/repos/{owner}/{repo}', headers=headers)
@@ -203,9 +201,6 @@ def main():
         except requests.exceptions.RequestException as e:
             print(f"Error: Connection failed: {e}")
             sys.exit(1)
-
-if __name__ == '__main__':
-    main()
 
 if __name__ == '__main__':
     main()
