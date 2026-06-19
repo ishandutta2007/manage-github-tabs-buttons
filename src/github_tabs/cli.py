@@ -75,6 +75,157 @@ def ensure_funding_yml(owner, repo, token, headers):
     else:
         print(f"Warning: Could not create '{path}': {put_resp.text}")
 
+def ensure_discussion_template(owner, repo, token, headers):
+    """Checks for .github/DISCUSSION_TEMPLATE/announcements.yml and creates it if missing."""
+    path = '.github/DISCUSSION_TEMPLATE/announcements.yml'
+    url = f'https://api.github.com/repos/{owner}/{repo}/contents/{path}'
+    
+    # Check if it exists
+    check_resp = requests.get(url, headers=headers)
+    if check_resp.status_code == 200:
+        print(f"Info: '{path}' already exists.")
+        return
+    
+    # Create it if missing
+    print(f"Action: Creating '{path}' with welcome_text template...")
+    content = """title: Announcements
+body:
+  - type: textarea
+    id: welcome_text
+    attributes:
+      label: Welcome Text
+      description: Welcome text for this announcement.
+      placeholder: Write something here...
+    validations:
+      required: true
+"""
+    encoded_content = base64.b64encode(content.encode()).decode()
+    
+    data = {
+        "message": "docs: create announcements template for discussions",
+        "content": encoded_content
+    }
+    
+    put_resp = requests.put(url, headers=headers, json=data)
+    if put_resp.status_code == 201:
+        print(f"Success: Created '{path}'.")
+    else:
+        print(f"Warning: Could not create '{path}': {put_resp.text}")
+
+def create_welcome_discussion(owner, repo, token, headers):
+    """Creates a welcome discussion post in the Announcements category if it doesn't already exist."""
+    # 1. Fetch Repository Node ID, Categories, and recent Discussions
+    query = """
+    query($owner: String!, $repo: String!) {
+      repository(owner: $owner, name: $repo) {
+        id
+        discussionCategories(first: 20) {
+          nodes {
+            id
+            name
+            slug
+          }
+        }
+        discussions(first: 30, orderBy: {field: CREATED_AT, direction: DESC}) {
+          nodes {
+            title
+            category {
+              slug
+            }
+          }
+        }
+      }
+    }
+    """
+    variables = {"owner": owner, "repo": repo}
+    gql_url = 'https://api.github.com/graphql'
+    
+    print(f"Action: Checking for existing welcome discussion in {owner}/{repo}...")
+    try:
+        resp = requests.post(gql_url, headers=headers, json={'query': query, 'variables': variables})
+        if resp.status_code != 200:
+            print(f"Warning: GraphQL request failed to fetch repository details: {resp.text}")
+            return
+            
+        res_data = resp.json()
+        if 'errors' in res_data:
+            print(f"Warning: GraphQL returned errors: {res_data['errors']}")
+            return
+            
+        repo_data = res_data.get('data', {}).get('repository')
+        if not repo_data:
+            print("Warning: Could not fetch repository data from GraphQL.")
+            return
+            
+        repo_node_id = repo_data.get('id')
+        categories = repo_data.get('discussionCategories', {}).get('nodes', [])
+        discussions = repo_data.get('discussions', {}).get('nodes', [])
+        
+        # Check if welcome discussion already exists
+        target_title = "Welcome to our discussions!"
+        for disc in discussions:
+            disc_title = disc.get('title')
+            disc_cat = disc.get('category', {})
+            if disc_title == target_title and disc_cat.get('slug') == 'announcements':
+                print(f"Info: Welcome discussion '{target_title}' already exists in Announcements.")
+                return
+        
+        # Find Announcements Category ID
+        announcements_category_id = None
+        for cat in categories:
+            if cat.get('slug') == 'announcements' or cat.get('name', '').lower() == 'announcements':
+                announcements_category_id = cat.get('id')
+                break
+                
+        if not announcements_category_id:
+            print("Warning: 'Announcements' category not found in repository discussions.")
+            return
+            
+        # 2. Create the discussion
+        print(f"Action: Creating a new welcome discussion post in Announcements category...")
+        mutation = """
+        mutation($repoId: ID!, $catId: ID!, $title: String!, $body: String!) {
+          createDiscussion(input: {repositoryId: $repoId, categoryId: $catId, title: $title, body: $body}) {
+            discussion {
+              id
+              url
+              title
+            }
+          }
+        }
+        """
+        
+        body = (
+            "# Welcome to our Discussions tab! \ud83d\udc4b\n\n"
+            "We are excited to have you here! This is a space for our community to:\n\n"
+            "- \ud83d\udcac **Ask questions** about how to use the project or get help.\n"
+            "- \ud83d\udca1 **Share ideas** and feature requests.\n"
+            "- \ud83d\udce2 **Get announcements** and updates on new releases.\n"
+            "- \ud83e\udd1d **Connect** with other community members and maintainers.\n\n"
+            "To get started, feel free to introduce yourself in the comments below!"
+        )
+        
+        mut_variables = {
+            "repoId": repo_node_id,
+            "catId": announcements_category_id,
+            "title": target_title,
+            "body": body
+        }
+        
+        mut_resp = requests.post(gql_url, headers=headers, json={'query': mutation, 'variables': mut_variables})
+        if mut_resp.status_code == 200:
+            mut_data = mut_resp.json()
+            if 'errors' in mut_data:
+                print(f"Warning: GraphQL failed to create discussion: {mut_data['errors']}")
+            else:
+                disc = mut_data.get('data', {}).get('createDiscussion', {}).get('discussion', {})
+                print(f"Success: Created welcome discussion: {disc.get('title')} - {disc.get('url')}")
+        else:
+            print(f"Warning: GraphQL request to create discussion failed: {mut_resp.text}")
+            
+    except Exception as e:
+        print(f"Warning: Could not create welcome discussion: {e}")
+
 def main():
     # Load .env file if it exists
     load_dotenv()
@@ -84,6 +235,7 @@ def main():
     parser.add_argument('username', nargs='?', help='GitHub username/owner of the repo (default: current user or remote owner)')
     parser.add_argument('repo', nargs='?', help='Name of the repository (default: current git directory)')
     parser.add_argument('--token', dest='token', help='GitHub ADMIN_TOKEN (default: ADMIN_TOKEN from .env)')
+    parser.add_argument('--discussion-template', action='store_true', help='Create a default welcome_text template in announcements category')
     
     args = parser.parse_args()
     
@@ -189,6 +341,9 @@ def main():
             response = requests.patch(url, headers=headers, json=data)
             if response.status_code == 200:
                 print(f"Success: '{args.tabname}' is now enabled for {owner}/{repo}!")
+                if field == 'has_discussions' and args.discussion_template:
+                    ensure_discussion_template(owner, repo, token, headers)
+                    create_welcome_discussion(owner, repo, token, headers)
             elif response.status_code == 404:
                 print(f"Error: Repository {owner}/{repo} not found or token lacks access.")
             elif response.status_code == 422:

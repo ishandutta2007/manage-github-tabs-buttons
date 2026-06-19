@@ -69,6 +69,12 @@ ADMIN_TOKEN=your_github_pat_here
 github-tabs Sponsorships
 ```
 
+**Enable Discussions and create an announcements template:**
+> This will enable Discussions AND automatically create `.github/DISCUSSION_TEMPLATE/announcements.yml` with a `welcome_text` field.
+```bash
+github-tabs Discussions --discussion-template
+```
+
 **Enable Wiki for a specific user/repo:**
 ```bash
 github-tabs Wiki ishandutta2007 my-awesome-project
@@ -77,13 +83,14 @@ github-tabs Wiki ishandutta2007 my-awesome-project
 ## 📖 Detailed Options
 
 ```bash
-github-tabs [-h] [--token TOKEN] tabname [username] [repo]
+github-tabs [-h] [--token TOKEN] [--discussion-template] tabname [username] [repo]
 ```
 
 - `tabname`: The name of the tab, button, or feature to enable.
 - `username` (optional): The GitHub owner. Defaults to the current authenticated user.
 - `repo` (optional): The repository name. Defaults to the current directory.
 - `--token` (optional): Provide a token directly, bypassing environment variables.
+- `--discussion-template` (optional): If enabling Discussions, creates a default template (`.github/DISCUSSION_TEMPLATE/announcements.yml`) featuring a `welcome_text` field to prefill new discussions.
 
 ## 🤝 Contributing
 
