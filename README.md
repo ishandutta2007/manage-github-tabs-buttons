@@ -96,6 +96,20 @@ github-tabs [-h] [--token TOKEN] [--discussion-template] tabname [username] [rep
 
 Contributions are welcome! Whether it's a bug report, feature request, or a pull request, feel free to open an issue or submit a PR.
 
+## 💖 Support
+
+Thank you for using and supporting **GitHub Tabs CLI**! 
+
+If this tool has saved you time or made your workflow easier, please consider supporting the project:
+- ⭐ **Star** this repository to help boost its visibility.
+- 🍴 **Fork** the project and share it with friends, teams, or your developer community.
+- 📢 **Spread the word** on social media and developer forums.
+- ☕ **Buy me a coffee**: Support ongoing development and maintenance via the [GitHub Sponsors Dashboard](https://github.com/sponsors/ishandutta2007).
+
+<a href="https://github.com/sponsors/ishandutta2007">
+  <img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?style=for-the-badge&logo=github-sponsors" alt="Sponsor on GitHub" />
+</a>
+
 ## 📄 License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
