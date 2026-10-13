@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/github/license/ishandutta2007/manage-github-tabs-buttons?color=green" alt="License">
   </a>
   <a href="https://github.com/ishandutta2007/manage-github-tabs-buttons/stargazers">
-    <img src="https://img.shields.io/github/stars/ishandutta2007/manage-github-tabs-buttons?style=flat&color=yellow" alt="GitHub Stars">
+    <img src="https://img.shields.io/github/stars/ishandutta2007/manage-github-tabs-buttons?style=flat&color=yellow" alt="GitHub_Stars">
   </a>
   <a href="https://github.com/ishandutta2007/manage-github-tabs-buttons/network/members">
     <img src="https://img.shields.io/github/forks/ishandutta2007/manage-github-tabs-buttons?style=flat&color=lightgrey" alt="GitHub Forks">
@@ -130,3 +130,12 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
     </picture>
    </a>
 </div>
+
+## ⭐ Star History
+
+<a href="https://star-history.com/#ishandutta2007/manage-github-tabs-buttons&Timeline" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/ishandutta2007_manage-github-tabs-buttons_growth.svg">
+    <img alt="Star History Chart" src="assets/ishandutta2007_manage-github-tabs-buttons_growth.svg">
+  </picture>
+</a>
